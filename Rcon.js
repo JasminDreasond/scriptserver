@@ -35,9 +35,12 @@ class RconBase {
   tick() {
     if (this.state === states.CONNECTED && this.queue.length > 0) {
       const item = this.queue.shift();
+      console.log(item);
       this.rcon.send(item.command).then(function ({ body }) {
+        console.log(body);
         return item.callback(body);
       }).catch(function (err) {
+        console.error(err);
         item.callback(null, err);
       });
     }
