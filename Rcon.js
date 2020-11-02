@@ -38,7 +38,7 @@ class RconBase {
       this.rcon.send(item.command).then(function ({ body }) {
         return item.callback(body);
       }).catch(function (err) {
-        item.callback(body, err);
+        item.callback(null, err);
       });
     }
 
