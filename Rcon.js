@@ -6,7 +6,7 @@ const states = {
   DISCONNECTED: 'disconnected',
 };
 
-class Rcon {
+class RconBase {
   constructor(config = {}) {
     this.config = config;
     this.state = states.DISCONNECTED;
@@ -53,4 +53,4 @@ class Rcon {
   }
 }
 
-module.exports = Rcon;
+module.exports = RconBase;
