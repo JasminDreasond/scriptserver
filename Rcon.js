@@ -20,7 +20,7 @@ class Rcon {
       timeout: 0,
     });
 
-    this.rcon.on('connected', () => {
+    this.rcon.on('authenticated', () => {
       this.state = states.CONNECTED;
       this.err = null;
     });
