@@ -38,6 +38,7 @@ class Rcon {
   }
 
   tick() {
+    console.log(`Tick! States: ${this.state} | Length: ${this.queue.length}`);
     if (this.state === states.CONNECTED && this.queue.length > 0) {
       const item = this.queue.shift();
       console.log(item);
