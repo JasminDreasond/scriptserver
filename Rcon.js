@@ -1,5 +1,5 @@
 
-const SimpleRcon = require('simple-rcon');
+const modernRcon = require('modern-rcon');
 
 const states = {
   CONNECTED: 'connected',
@@ -12,17 +12,12 @@ class Rcon {
     this.state = states.DISCONNECTED;
     this.queue = [];
 
-    this.rcon = new SimpleRcon({
-      host: this.config.host,
-      port: this.config.port,
-      password: this.config.password,
-      timeout: 0,
-    });
+    this.rcon = new modernRcon(this.config.host, this.config.port, this.config.password, 0);
 
-    this.rcon.on('authenticated', () => {
+    this.rcon._tcpSocket.on('connect', () => {
       this.state = states.CONNECTED;
     });
-    this.rcon.on('disconnected', () => {
+    this.rcon._tcpSocket.on('end', () => {
       this.state = states.DISCONNECTED;
     });
 
@@ -40,7 +35,11 @@ class Rcon {
   tick() {
     if (this.state === states.CONNECTED && this.queue.length > 0) {
       const item = this.queue.shift();
-      this.rcon.exec(item.command, ({ body }) => item.callback(body));
+      this.rcon.send(item.command).then(function ({ body }) {
+        return item.callback(body);
+      }).catch(function (err) {
+        item.callback(body, err);
+      });
     }
 
     setTimeout(() => this.tick(), this.config.buffer);
