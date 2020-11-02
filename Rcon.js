@@ -21,7 +21,7 @@ class Rcon {
     });
 
     this.rcon.on('connecting', () => {
-      console.log('RCON Connection - connecting!');
+      console.log('[RCON Connection] - connecting!');
     });
 
     this.rcon.on('connected', () => {
@@ -29,23 +29,23 @@ class Rcon {
     });
     
     this.rcon.on('authenticated', () => {
-      console.log('RCON Connection - authenticated!');
+      console.log('[RCON Connection] - authenticated!');
       this.state = states.CONNECTED;
       this.err = null;
     });
 
     this.rcon.on('disconnecting', () => {
-      console.log('RCON Connection - disconnecting!');
+      console.log('[RCON Connection] - disconnecting!');
     });
     
     this.rcon.on('disconnected', () => {
-      console.log('RCON Connection - disconnected!');
+      console.log('[RCON Connection] - disconnected!');
       this.state = states.DISCONNECTED;
       this.err = null;
     });
 
     this.rcon.on('error', (err) => {
-      console.error(`RCON Connection Error: ${err.message}`);
+      console.error(`[RCON Connection] Error: ${err.message}`);
       this.err = err;
     });
 
