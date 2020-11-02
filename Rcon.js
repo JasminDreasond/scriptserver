@@ -1,5 +1,5 @@
 
-const modernRcon = require('modern-rcon');
+const modernRcon = require('rcon-client');
 
 const states = {
   CONNECTED: 'connected',
@@ -12,12 +12,12 @@ class Rcon {
     this.state = states.DISCONNECTED;
     this.queue = [];
 
-    this.rcon = new modernRcon(this.config.host, this.config.port, this.config.password, 0);
+    this.rcon = new modernRcon({ host: this.config.host, port: this.config.port, password: this.config.password });
 
-    this.rcon._tcpSocket.on('connect', () => {
+    this.rcon.on('authenticated', () => {
       this.state = states.CONNECTED;
     });
-    this.rcon._tcpSocket.on('end', () => {
+    this.rcon.on('end', () => {
       this.state = states.DISCONNECTED;
     });
 
@@ -29,7 +29,7 @@ class Rcon {
   }
 
   disconnect() {
-    this.rcon.close();
+    this.rcon.end();
   }
 
   tick() {
