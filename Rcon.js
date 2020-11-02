@@ -12,7 +12,7 @@ class Rcon {
     this.state = states.DISCONNECTED;
     this.queue = [];
 
-    this.rcon = new modernRcon({ host: this.config.host, port: this.config.port, password: this.config.password });
+    this.rcon = modernRcon.connect({ host: this.config.host, port: this.config.port, password: this.config.password });
 
     this.rcon.on('authenticated', () => {
       this.state = states.CONNECTED;
