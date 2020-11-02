@@ -20,7 +20,7 @@ class Rcon {
       timeout: 0,
     });
 
-    this.rcon.on('authenticated', () => {
+    this.rcon.on('connected', () => {
       this.state = states.CONNECTED;
       this.err = null;
     });
@@ -30,7 +30,6 @@ class Rcon {
     });
 
     this.rcon.on('error', (err) => {
-      console.error(err);
       this.err = err;
     });
 
