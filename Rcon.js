@@ -25,7 +25,7 @@ class Rcon {
     });
 
     this.rcon.on('connected', () => {
-      console.log('RCON Connection - connected!');
+      console.log('[RCON Connection] - connected!');
     });
     
     this.rcon.on('authenticated', () => {
