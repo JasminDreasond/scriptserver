@@ -1,23 +1,28 @@
 
-const { Rcon } = require('rcon-client');
+const SimpleRcon = require('simple-rcon');
 
 const states = {
   CONNECTED: 'connected',
   DISCONNECTED: 'disconnected',
 };
 
-class RconBase {
+class Rcon {
   constructor(config = {}) {
     this.config = config;
     this.state = states.DISCONNECTED;
     this.queue = [];
 
-    this.rcon = new Rcon({ host: this.config.host, port: this.config.port, password: this.config.password });
+    this.rcon = new SimpleRcon({
+      host: this.config.host,
+      port: this.config.port,
+      password: this.config.password,
+      timeout: 0,
+    });
 
     this.rcon.on('authenticated', () => {
       this.state = states.CONNECTED;
     });
-    this.rcon.on('end', () => {
+    this.rcon.on('disconnected', () => {
       this.state = states.DISCONNECTED;
     });
 
@@ -29,19 +34,16 @@ class RconBase {
   }
 
   disconnect() {
-    this.rcon.end();
+    this.rcon.close();
   }
 
   tick() {
     if (this.state === states.CONNECTED && this.queue.length > 0) {
       const item = this.queue.shift();
       console.log(item);
-      this.rcon.send(item.command).then(function ({ body }) {
+      this.rcon.exec(item.command, ({ body }) => {
         console.log(body);
         return item.callback(body);
-      }).catch(function (err) {
-        console.error(err);
-        item.callback(null, err);
       });
     }
 
@@ -53,7 +55,8 @@ class RconBase {
       command,
       callback,
     });
+    console.log(this.queue);
   }
 }
 
-module.exports = RconBase;
+module.exports = Rcon;
