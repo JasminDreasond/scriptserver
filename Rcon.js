@@ -11,6 +11,7 @@ class Rcon {
     this.config = config;
     this.state = states.DISCONNECTED;
     this.queue = [];
+    this.err = null;
 
     this.rcon = new SimpleRcon({
       host: this.config.host,
@@ -21,9 +22,16 @@ class Rcon {
 
     this.rcon.on('authenticated', () => {
       this.state = states.CONNECTED;
+      this.err = null;
     });
     this.rcon.on('disconnected', () => {
       this.state = states.DISCONNECTED;
+      this.err = null;
+    });
+
+    this.rcon.on('error', (err) => {
+      console.error(err);
+      this.err = err;
     });
 
     this.tick();
@@ -38,14 +46,9 @@ class Rcon {
   }
 
   tick() {
-    console.log(`Tick! States: ${this.state} | Length: ${this.queue.length}`);
     if (this.state === states.CONNECTED && this.queue.length > 0) {
       const item = this.queue.shift();
-      console.log(item);
-      this.rcon.exec(item.command, ({ body }) => {
-        console.log(body);
-        return item.callback(body);
-      });
+      this.rcon.exec(item.command, ({ body }) => item.callback(body));
     }
 
     setTimeout(() => this.tick(), this.config.buffer);
@@ -56,7 +59,6 @@ class Rcon {
       command,
       callback,
     });
-    console.log(this.queue);
   }
 }
 
