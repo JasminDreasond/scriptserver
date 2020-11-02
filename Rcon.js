@@ -20,16 +20,32 @@ class Rcon {
       timeout: 0,
     });
 
+    this.rcon.on('connecting', () => {
+      console.log('RCON Connection - connecting!');
+    });
+
+    this.rcon.on('connected', () => {
+      console.log('RCON Connection - connected!');
+    });
+    
     this.rcon.on('authenticated', () => {
+      console.log('RCON Connection - authenticated!');
       this.state = states.CONNECTED;
       this.err = null;
     });
+
+    this.rcon.on('disconnecting', () => {
+      console.log('RCON Connection - disconnecting!');
+    });
+    
     this.rcon.on('disconnected', () => {
+      console.log('RCON Connection - disconnected!');
       this.state = states.DISCONNECTED;
       this.err = null;
     });
 
     this.rcon.on('error', (err) => {
+      console.error(`RCON Connection Error: ${err.message}`);
       this.err = err;
     });
 
